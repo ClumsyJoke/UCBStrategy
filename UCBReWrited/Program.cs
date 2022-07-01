@@ -9,9 +9,9 @@ namespace UCBReWrited
         static void Main(string[] args)
         {
             StrategyАnalysis[] arrStrat = new StrategyАnalysis[3];
-            
+
             int horizon = 5000;
-            arrStrat[0] = new StrategyАnalysis(horizon,new StreamWriter("D:/Out1200.txt"));//Передача в конструктор размер горизотна и фаила записи
+            arrStrat[0] = new StrategyАnalysis(horizon, new StreamWriter("D:/Out1200.txt"));//Передача в конструктор размер горизотна и фаила записи
             arrStrat[0].FindLost(1.1d);
             //{ //Для определения оптимального а
             //Thread[] potok1 = new Thread[2];
@@ -38,4 +38,5 @@ namespace UCBReWrited
             //arrStrat[2].FindOptimalA(0.99d);
             //}
         }
+    }
 }
