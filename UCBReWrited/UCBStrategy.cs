@@ -26,7 +26,7 @@ namespace UCBReWrited
         {
             double lost = 0;
             double maxLost = 0;
-            for (double d = 0.0d;d< 8d; d += 0.3d)
+            for (double d = 0.3d;d< 8d; d += 0.3d)
             {
                 lost = 0;
                 for (int avg = 0; avg < averagingNumber; avg++)
@@ -45,7 +45,7 @@ namespace UCBReWrited
                         bandit.ReturnWin(maxIndex, d);
                         double logChoise = Math.Log(k);
                         for (int temp = 0; temp < bandit.HandleCount; temp++)
-                            confidentialInterval[temp] = bandit.HandleWin[temp] / bandit.HandeChoise[temp] + a * Math.Sqrt(logChoise / bandit.HandeChoise[temp]);
+                            confidentialInterval[temp] = bandit.HandleWin[temp] / bandit.HandeChoise[temp] + a * Math.Sqrt(bandit.Dispersion[temp] *  logChoise / bandit.HandeChoise[temp]);
                         
                     }
                     lost += bandit.ManagmentHorizont * d * bandit.dSmall[0] / bandit.sqrtManagmentHorizont;
@@ -72,6 +72,15 @@ namespace UCBReWrited
             confidentialInterval[i] = bandit.HandleWin[i] / bandit.HandeChoise[i] + a * (2d + bandit.ExpRandom()) / bandit.HandeChoise[i]; 
 
         }
-               
+         
+        //public void FindDispersion(double d,double a)
+        //{
+            
+        //    bandit.ReturnWin(maxIndex, d);
+        //    double logChoise = Math.Log(k);
+        //    for (int temp = 0; temp < bandit.HandleCount; temp++)
+        //        confidentialInterval[temp] = bandit.HandleWin[temp] / bandit.HandeChoise[temp] + a * Math.Sqrt(bandit.Dispersion[temp] * logChoise / bandit.HandeChoise[temp]);
+
+        //}
     }
 }

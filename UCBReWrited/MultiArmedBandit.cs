@@ -10,6 +10,7 @@ namespace UCBReWrited
         double handleCount;
         int[] handleChoise;
         double[] handleWin;
+        double[] dispersion;
         //Инициализарованы изначально
         public double[] dSmall = { 1d, -1d }; //Думаю перенести в стратегию,так как в этом классе не хватает значений
         int managmentHorizont;//Как передавать выбор из другого класса?
@@ -19,6 +20,7 @@ namespace UCBReWrited
         public int ManagmentHorizont { get => managmentHorizont; set => managmentHorizont = value; }
         public int[] HandeChoise { get => handleChoise; set => handleChoise = value; }
         public double[] HandleWin { get => handleWin; set => handleWin = value; }
+        public double[] Dispersion { get => dispersion; set => dispersion = value; }
 
         public MultiArmedBandit(int count,int horizont) 
         {
@@ -26,6 +28,7 @@ namespace UCBReWrited
             handleCount = count;
             handleChoise = new int[count];
             handleWin = new double[count];
+            Dispersion = new double[count];
             managmentHorizont = horizont;
             sqrtManagmentHorizont = Math.Sqrt(horizont);
         }
@@ -35,7 +38,11 @@ namespace UCBReWrited
             handleChoise[index]++;
             handleWin[index] += NormRandom() + d * dSmall[index] / sqrtManagmentHorizont;
         }
+        
+        public void ReturnWinBinom(int index, double d = 0)
+        {
 
+        }
         public void ClearData()
         {
             for (int i = 0;i < handleCount;i++)
