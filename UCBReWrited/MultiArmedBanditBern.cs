@@ -39,7 +39,8 @@ namespace UCBReWrited
         public double SqrtDispersion { get => sqrtDispersion; set => sqrtDispersion = value; }
 
         public int PackageSize { get => packageSize; set => packageSize = value; }
-        
+        public double Probability { get => probability; set => probability = value; }
+
         public MultiArmedBanditBern(int count, int horizont ,double disp,double prob)//Инициализация основного автомата
         {
             rnd = new Random();
@@ -54,12 +55,12 @@ namespace UCBReWrited
             dispersion = disp;
             SqrtDispersion = Math.Sqrt(dispersion);
             
-            probability = prob;
+            Probability = prob;
         }
 
         public void ReturnWin(int index, double d = 0)
         {
-            handleChoise[index]+=1;
+            handleChoise[index]++;
             double di=0;
             if (index == 0)
                 di += d;
@@ -70,9 +71,8 @@ namespace UCBReWrited
 
         private double BernRandom(int index, double d)
         {
-            double prob = probability;
+            double prob = Probability + d * SqrtDispersion / SqrtManagmentHorizont;
             int sum = 0;
-            prob += d * SqrtDispersion / SqrtManagmentHorizont;
             for (int i = 1; i <= packageSize; i++)
                 if (rnd.NextDouble() < prob)
                     sum++;

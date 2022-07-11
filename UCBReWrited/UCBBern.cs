@@ -23,7 +23,7 @@ namespace UCBReWrited
 
         public double PlayStrategy(double a = 1)
         {
-            double lost = 0;
+            double lost;
             double maxLost = 0;
             int n = bandit.ManagmentHorizont / bandit.PackageSize;//Число пакетов
 
@@ -40,24 +40,27 @@ namespace UCBReWrited
                     {
                         double logK = Math.Log(bandit.HandleCount);//Что бы не считать логарифм k 2 раза
                         bandit.ReturnWin(start, d);
-                        confidentialInterval[start] = bandit.HandleWin[start] / 1 + a * Math.Sqrt(bandit.Dispersion * bandit.PackageSize * logK / 1 );
+                        confidentialInterval[start] = bandit.HandleWin[start] + a * Math.Sqrt(bandit.Dispersion * bandit.PackageSize * logK);
                     }
                     //Остальные 48 действий
                     for(int k = 3; k <= n; k++)
                     {
                         int maxIndex = (confidentialInterval[0] > confidentialInterval[1] ? 0 : 1);//Максимальный доверительный
                         bandit.ReturnWin(maxIndex,d);//Выбор этого действия
-                        double logChoise = Math.Log(k);//Чтоб не считать 2 раза
-
+                        //double logChoise = Math.Log(k);//Чтоб не считать 2 раза
+                        double sqrtZ = Math.Sqrt(bandit.PackageSize * Math.Log(k));
                         //Доверительный интрвал в момент времени k
-                        confidentialInterval[0] = bandit.HandleWin[0] / bandit.HandeChoise[0] + a * Math.Sqrt(bandit.Dispersion * bandit.PackageSize * logChoise / bandit.HandeChoise[0]);
-                        confidentialInterval[1] = bandit.HandleWin[1] / bandit.HandeChoise[1] + a * Math.Sqrt(bandit.Dispersion * bandit.PackageSize * logChoise / bandit.HandeChoise[1]);
-
+                        confidentialInterval[0] = bandit.HandleWin[0] / bandit.HandeChoise[0] + a * sqrtZ * bandit.SqrtDispersion / Math.Sqrt(bandit.HandeChoise[0]);
+                        confidentialInterval[1] = bandit.HandleWin[1] / bandit.HandeChoise[1] + a * sqrtZ * bandit.SqrtDispersion / Math.Sqrt(bandit.HandeChoise[1]);
+                        
                     }
-                    lost += d * bandit.SqrtDispersion * bandit.SqrtManagmentHorizont;
-                    lost -= bandit.HandleWin[0] + bandit.HandleWin[1];
+                    
+                    lost += (bandit.Probability * bandit.ManagmentHorizont + d * bandit.SqrtDispersion * bandit.SqrtManagmentHorizont) ;    
+                    lost -= bandit.HandleWin[0]  + bandit.HandleWin[1] ;
+                    
                 }
-                lost /= averagingNumber * bandit.SqrtManagmentHorizont;
+                
+                lost /= averagingNumber * bandit.SqrtDispersion * bandit.SqrtManagmentHorizont;
                 Console.WriteLine(lost + " | " + d);
                 sw.WriteLine(lost + " | " + d);
                 if (lost > maxLost)

@@ -13,7 +13,7 @@ namespace UCBReWrited
 
         public StrategyАnalysis(int horizont,StreamWriter ss) 
         {
-            strat = new UCBBern(2,horizont,100000,ss);//Количество действий, горизонт,число усреднений, фаил записи
+            strat = new UCBBern(2,horizont,400000,ss);//Количество действий, горизонт,число усреднений, фаил записи
 
         }
         public void FindLost(double a)
@@ -32,7 +32,7 @@ namespace UCBReWrited
             double minMaxLost = 10;
             double lost;
             double optimalA = 1;
-            for (double a = startA;a < startA + 0.02d; a += 0.01) 
+            for (double a = startA;a < startA + 0.05d; a += 0.01) 
             {
                 Console.WriteLine("a = {0}", a);
                 strat.sw.WriteLine("a = {0}", a);
