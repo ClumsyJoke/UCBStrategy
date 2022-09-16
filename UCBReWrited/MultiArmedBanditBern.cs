@@ -5,7 +5,7 @@ namespace UCBReWrited
     class MultiArmedBanditBern
     {
         readonly Random rnd;
-        Geterator gen;
+        
         //Инициализация в конструкторе
         double handleCount;
         int[] handleChoise;
@@ -19,30 +19,12 @@ namespace UCBReWrited
 
         double probability;
         double sqrtDN;
-
-        int startPackageSize;
+        int[] packageSize;
         
-        //Инициализарованы изначально
-        
-        public double[] dSmall = { 1d, -1d };
-        
-        int packageSize = 100;
+        //public double[] dSmall = { 1d, -1d };
 
-        public double HandleCount { get => handleCount; set => handleCount = value; }
-        public int[] HandeChoise { get => handleChoise; set => handleChoise = value; }
-        public double[] HandleWin { get => handleWin; set => handleWin = value; }
 
-        public int ManagmentHorizont { get => managmentHorizont; set => managmentHorizont = value; }
-        public double SqrtManagmentHorizont { get => sqrtManagmentHorizont; set => sqrtManagmentHorizont = value; }
-
-        public double Dispersion { get => dispersion; set => dispersion = value; }
-        public double SqrtDispersion { get => sqrtDispersion; set => sqrtDispersion = value; }
-
-        public int PackageSize { get => packageSize; set => packageSize = value; }
-        public double Probability { get => probability; set => probability = value; }
-        public int StartPackageSize { get => startPackageSize; set => startPackageSize = value; }
-
-        public MultiArmedBanditBern(int count, int horizont ,double disp,double prob,int start)//Инициализация основного автомата
+        public MultiArmedBanditBern(int count, int horizont, double disp, double prob, int start)//Инициализация основного автомата
         {
             rnd = new Random();
 
@@ -52,30 +34,38 @@ namespace UCBReWrited
 
             managmentHorizont = horizont;
             SqrtManagmentHorizont = Math.Sqrt(horizont);
-
-            StartPackageSize = start;
+            PackageSize = new int[] { start, 100 };
 
             dispersion = disp;
             SqrtDispersion = Math.Sqrt(dispersion);
             sqrtDN = sqrtDispersion / sqrtManagmentHorizont;
             Probability = prob;
 
-
-            //gen = new Geterator(prob, sqrtDN);
         }
+        //Свойства на используемые переменные
+        public double HandleCount { get => handleCount; set => handleCount = value; }
+        public int[] HandeChoise { get => handleChoise; set => handleChoise = value; }
+        public double[] HandleWin { get => handleWin; set => handleWin = value; }
 
-        public void ReturnWin(int index, double d = 0)
-        {
-            handleChoise[index]++;
-            double di=0;
-            if (index == 0)
-                di += d;
-            else
-                di -= d;
-            handleWin[index] += BernRandom(di);
-        }
+        public int ManagmentHorizont { get => managmentHorizont; set => managmentHorizont = value; }
+        public double SqrtManagmentHorizont { get => sqrtManagmentHorizont; set => sqrtManagmentHorizont = value; }
 
-        public void ReturnFirstWin(int index, double d = 0)
+        public double Dispersion { get => dispersion; set => dispersion = value; }
+        public double SqrtDispersion { get => sqrtDispersion; set => sqrtDispersion = value; }
+        public double Probability { get => probability; set => probability = value; }
+        public int[] PackageSize { get => packageSize; set => packageSize = value; }
+
+
+        /// <summary>
+        /// Изменение значения HandleWin и HandleChoise
+        /// </summary>
+        /// <remarks>HandleWin: в зависимости от генератора Бернулли, 
+        /// HandleChoise: + 1
+        /// </remarks>
+        /// <param name="index">Вбор ручки автомата: 0 - первая, 1 - вторая , ...</param>
+        /// <param name="packageIndex">Индекс выбора размера пакета: 0 - начальный, 1 - основной</param>
+        /// <param name="d"></param>
+        public void ReturnWin(int index, int packageIndex, double d = 0)
         {
             handleChoise[index]++;
             double di = 0;
@@ -83,28 +73,26 @@ namespace UCBReWrited
                 di += d;
             else
                 di -= d;
-            handleWin[index] += BernRandomStart(di);
+            handleWin[index] += BernRandom(di, packageIndex);
         }
-        private double BernRandomStart(double d)
+        /// <summary>
+        /// Генератор распределения Бернулли
+        /// </summary>
+        /// <param name="d"></param>
+        /// <param name="packageIndex">Индекс выбора размера пакета: 0 - начальный, 1 - основной </param>
+        /// <returns></returns>
+        private double BernRandom(double d, int packageIndex)
         {
             double prob = Probability + d * sqrtDN;
             int sum = 0;
-            for (int i = 1; i <= startPackageSize; i++)
+            for (int i = 1; i <= PackageSize[packageIndex]; i++)
                 if (rnd.NextDouble() < prob)
                     sum++;
             return sum;
         }
-        private double BernRandom(double d)
-        {
-            double prob = Probability + d * sqrtDN;
-            int sum = 0;
-            for (int i = 1; i <= packageSize; i++)
-                if (rnd.NextDouble() < prob)
-                    sum++;
-            return sum;
-        }
-
-        
+        /// <summary>
+        /// Очистка handleChoise и handleWin
+        /// </summary>
         public void ClearData()
         {
             for (int i = 0; i < handleCount; i++)
@@ -113,8 +101,6 @@ namespace UCBReWrited
                 handleWin[i] = 0;
             }
         }
-        
-       
-        
+     
     }
 }
