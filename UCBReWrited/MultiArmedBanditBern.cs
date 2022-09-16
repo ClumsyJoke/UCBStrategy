@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace UCBReWrited
 {
     class MultiArmedBanditBern
     {
-        Random rnd;
+        readonly Random rnd;
+        Geterator gen;
         //Инициализация в конструкторе
         double handleCount;
         int[] handleChoise;
@@ -21,6 +18,9 @@ namespace UCBReWrited
         double sqrtDispersion;
 
         double probability;
+        double sqrtDN;
+
+        int startPackageSize;
         
         //Инициализарованы изначально
         
@@ -40,8 +40,9 @@ namespace UCBReWrited
 
         public int PackageSize { get => packageSize; set => packageSize = value; }
         public double Probability { get => probability; set => probability = value; }
+        public int StartPackageSize { get => startPackageSize; set => startPackageSize = value; }
 
-        public MultiArmedBanditBern(int count, int horizont ,double disp,double prob)//Инициализация основного автомата
+        public MultiArmedBanditBern(int count, int horizont ,double disp,double prob,int start)//Инициализация основного автомата
         {
             rnd = new Random();
 
@@ -52,10 +53,15 @@ namespace UCBReWrited
             managmentHorizont = horizont;
             SqrtManagmentHorizont = Math.Sqrt(horizont);
 
+            StartPackageSize = start;
+
             dispersion = disp;
             SqrtDispersion = Math.Sqrt(dispersion);
-            
+            sqrtDN = sqrtDispersion / sqrtManagmentHorizont;
             Probability = prob;
+
+
+            //gen = new Geterator(prob, sqrtDN);
         }
 
         public void ReturnWin(int index, double d = 0)
@@ -66,12 +72,31 @@ namespace UCBReWrited
                 di += d;
             else
                 di -= d;
-            handleWin[index] += BernRandom(index, di);
+            handleWin[index] += BernRandom(di);
         }
 
-        private double BernRandom(int index, double d)
+        public void ReturnFirstWin(int index, double d = 0)
         {
-            double prob = Probability + d * SqrtDispersion / SqrtManagmentHorizont;
+            handleChoise[index]++;
+            double di = 0;
+            if (index == 0)
+                di += d;
+            else
+                di -= d;
+            handleWin[index] += BernRandomStart(di);
+        }
+        private double BernRandomStart(double d)
+        {
+            double prob = Probability + d * sqrtDN;
+            int sum = 0;
+            for (int i = 1; i <= startPackageSize; i++)
+                if (rnd.NextDouble() < prob)
+                    sum++;
+            return sum;
+        }
+        private double BernRandom(double d)
+        {
+            double prob = Probability + d * sqrtDN;
             int sum = 0;
             for (int i = 1; i <= packageSize; i++)
                 if (rnd.NextDouble() < prob)
@@ -79,6 +104,7 @@ namespace UCBReWrited
             return sum;
         }
 
+        
         public void ClearData()
         {
             for (int i = 0; i < handleCount; i++)
