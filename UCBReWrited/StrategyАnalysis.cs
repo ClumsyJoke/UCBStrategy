@@ -9,7 +9,7 @@ namespace UCBReWrited
         UCBBern strat;
         public StrategyАnalysis(int horizont,StreamWriter ss,double prob,int start) 
         {
-            strat = new UCBBern(2,horizont,100000,ss,prob,start);//Количество действий, горизонт,число усреднений, фаил записи
+            strat = new UCBBern(2,horizont,600000,ss,prob,start);//Количество действий, горизонт,число усреднений, фаил записи
 
         }
         /// <summary>
@@ -31,12 +31,12 @@ namespace UCBReWrited
         /// Поиск minmax потерь для диапазона "a"
         /// </summary>
         /// <param name="startA">Начало диапазона поиска</param>
-        public void FindOptimalA(double startA)
+        public void FindOptimalA(double startA,double endA, double deltaA)
         {
             double minMaxLost = 10;
             double lost;
             double optimalA = 1;
-            for (double a = startA;a < startA + 0.18d; a += 0.03d) 
+            for (double a = startA;a < endA; a += deltaA) 
             {
                 //Вывод для отладки
                 Console.WriteLine("a = {0}", a);

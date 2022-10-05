@@ -18,7 +18,7 @@ namespace UCBReWrited
         double sqrtDispersion;
 
         double probability;
-        double sqrtDN;
+        readonly double sqrtDN;
         int[] packageSize;
         
         //public double[] dSmall = { 1d, -1d };
@@ -67,7 +67,7 @@ namespace UCBReWrited
         /// <param name="d"></param>
         public void ReturnWin(int index, int packageIndex, double d = 0)
         {
-            handleChoise[index]++;
+            handleChoise[index] += PackageSize[packageIndex] / PackageSize[0];
             double di = 0;
             if (index == 0)
                 di += d;
@@ -85,7 +85,7 @@ namespace UCBReWrited
         {
             double prob = Probability + d * sqrtDN;
             int sum = 0;
-            for (int i = 1; i <= PackageSize[packageIndex]; i++)
+            for (int i = 0; i < PackageSize[packageIndex]; i++)
                 if (rnd.NextDouble() < prob)
                     sum++;
             return sum;

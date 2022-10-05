@@ -9,11 +9,11 @@ namespace UCBReWrited
         static void Main()
         {
             StrategyАnalysis[] arrStrat = new StrategyАnalysis[3];
-            int start = 95;
-            int horizon = 4800 + start * 2 ;
-            arrStrat[1] = new StrategyАnalysis(horizon, new StreamWriter("D:/Out9i15.txt"),0.5,start);
-            arrStrat[1].FindLost(1.22);
-           
+            int start = 50;
+            int horizon = 5000;
+            arrStrat[1] = new StrategyАnalysis(horizon, new StreamWriter("D:/New500.txt"),0.5,start);
+            //arrStrat[1].FindOptimalA(0.25d, 0.40d, 0.02d);
+            arrStrat[1].FindLost(0.64d);
         }
         //{
         //arrStrat[0] = new StrategyАnalysis(horizon, new StreamWriter("D:/Out05.txt"),0.05,start);//Передача в конструктор размер горизотна и фаила записи
