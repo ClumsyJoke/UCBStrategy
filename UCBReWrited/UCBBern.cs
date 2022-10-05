@@ -28,7 +28,7 @@ namespace UCBReWrited
             double logK = Math.Log(2);// Не считать несколько раз для начальных действий
             int relation = bandit.PackageSize[1] / bandit.PackageSize[0];
             int horizont = bandit.ManagmentHorizont / bandit.PackageSize[0];
-            for (double d = 0.0d;d < 2.5.1d; d += 0.3d)
+            for (double d = 0.0d;d < 2.5d; d += 0.3d)
             {
                 lost = 0;//Обнуление потерь после изменения d
                 for (int avg = 0;avg < averagingNumber; avg++)
