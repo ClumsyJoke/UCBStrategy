@@ -9,7 +9,7 @@ namespace UCBReWrited
         UCBBern strat;
         public StrategyАnalysis(int horizont,StreamWriter ss,double prob,int start) 
         {
-            strat = new UCBBern(2,horizont,600000,ss,prob,start);//Количество действий, горизонт,число усреднений, фаил записи
+            strat = new UCBBern(2,horizont,250000,ss,prob,start);//Количество действий, горизонт,число усреднений, фаил записи
 
         }
         /// <summary>

@@ -1,12 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace UCBReWrited
 {
-    class MultiArmedBanditBern
+    public abstract class MultiArmedBandit
     {
-        readonly Random rnd;
-        
+        protected readonly Random rnd;
+
         //Инициализация в конструкторе
+        
         double handleCount;
         int[] handleChoise;
         double[] handleWin;
@@ -18,13 +23,13 @@ namespace UCBReWrited
         double sqrtDispersion;
 
         double probability;
-        readonly double sqrtDN;
+        protected readonly double sqrtDN;
         int[] packageSize;
-        
+
         //public double[] dSmall = { 1d, -1d };
 
 
-        public MultiArmedBanditBern(int count, int horizont, double disp, double prob, int start)//Инициализация основного автомата
+        public MultiArmedBandit(int count, int horizont, double disp, double prob, int start)//Инициализация основного автомата
         {
             rnd = new Random();
 
@@ -44,7 +49,7 @@ namespace UCBReWrited
         }
         //Свойства на используемые переменные
         public double HandleCount { get => handleCount; set => handleCount = value; }
-        public int[] HandeChoise { get => handleChoise; set => handleChoise = value; }
+        public int[] HandleChoise { get => handleChoise; set => handleChoise = value; }
         public double[] HandleWin { get => handleWin; set => handleWin = value; }
 
         public int ManagmentHorizont { get => managmentHorizont; set => managmentHorizont = value; }
@@ -65,31 +70,16 @@ namespace UCBReWrited
         /// <param name="index">Вбор ручки автомата: 0 - первая, 1 - вторая , ...</param>
         /// <param name="packageIndex">Индекс выбора размера пакета: 0 - начальный, 1 - основной</param>
         /// <param name="d"></param>
-        public void ReturnWin(int index, int packageIndex, double d = 0)
-        {
-            handleChoise[index] += PackageSize[packageIndex] / PackageSize[0];
-            double di = 0;
-            if (index == 0)
-                di += d;
-            else
-                di -= d;
-            handleWin[index] += BernRandom(di, packageIndex);
-        }
+        public abstract void ReturnWin(int index, int packageIndex, double d = 0);
+
         /// <summary>
         /// Генератор распределения Бернулли
         /// </summary>
         /// <param name="d"></param>
         /// <param name="packageIndex">Индекс выбора размера пакета: 0 - начальный, 1 - основной </param>
         /// <returns></returns>
-        private double BernRandom(double d, int packageIndex)
-        {
-            double prob = Probability + d * sqrtDN;
-            int sum = 0;
-            for (int i = 0; i < PackageSize[packageIndex]; i++)
-                if (rnd.NextDouble() < prob)
-                    sum++;
-            return sum;
-        }
+        protected abstract double Random(double d, int packageIndex);
+
         /// <summary>
         /// Очистка handleChoise и handleWin
         /// </summary>
@@ -101,6 +91,7 @@ namespace UCBReWrited
                 handleWin[i] = 0;
             }
         }
-     
+
     }
 }
+
