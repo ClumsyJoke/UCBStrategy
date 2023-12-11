@@ -4,75 +4,73 @@ using System;
 class Arm
 {
     public static readonly double Expectation = 0.5d;
-    public static int Horizont;
+    //public static int Horizont;
 
     //Разные переменные для каждой рукоятки
-    private int _armChoise;
-    private int _armWin;
+    private int armChoise = 0;
+    private int armWin = 0;
 
-    private double _dispersion;
-    private double _probabitily;
+    private double dispersion;
+    private double probabitily;
 
-    private int _armIndex;
+    private int armIndex;
+    private int horizont;
 
-    private Random _rnd;
+    private Random rnd;
 
     //Конструктор
-    public Arm(int choise, int win, int dispersion, int armIndex, double d = 0)
+    public Arm(int horizont, double dispersion, int armIndex)
     {
-        ArmChoise = choise;
-        ArmWin = win;
-
         Dispersion = dispersion;
-        SetProbability(d);
+        Horizont = horizont;
+
+        SetProbability();
 
         ArmIndex = armIndex;
 
-        _rnd = new Random();
+        rnd = new Random();
     }
 
     //Свойства
-    public int ArmChoise
+    public int ArmChoises
     {
-        get => _armChoise;
-        set => _armChoise = value;
+        get => armChoise;
+        set => armChoise = value;
     }
     public int ArmWin
     {
-        get => _armWin;
-        set => _armWin = value;
+        get => armWin;
+        set => armWin = value;
     }
     public double Dispersion
     {
-        get => _dispersion;
-        set => _dispersion = value;
+        get => dispersion;
+        set => dispersion = value;
     }
     public int ArmIndex
     {
-        get => _armIndex;
-        set => _armIndex = value;
+        get => armIndex;
+        set => armIndex = value;
     }
     public double Probabitily { 
-        get => _probabitily; 
-        set => _probabitily = value; 
+        get => probabitily; 
+        set => probabitily = value; 
     }
+    public int Horizont { 
+        get => horizont; 
+        set => horizont = value; }
 
-
-    public void SetProbability(double d) 
+    public void SetProbability(double d = 0) 
     {
-        double temp = d * Math.Sqrt(Dispersion / Horizont);
-        if (ArmIndex == 0)
-            Probabitily = Expectation + temp;
-        else
-            Probabitily = Expectation - temp;
+        Probabitily =  Expectation + (ArmIndex == 0 ? d : -d) * Math.Sqrt(Dispersion / Horizont);
     }
 
     public void UseArm(int packSize)
     {
-        ArmChoise += packSize;
+        ArmChoises += packSize;
         while(packSize-- > 0)
         {
-            if (_rnd.NextDouble() < Probabitily)
+            if (rnd.NextDouble() < Probabitily)
             {
                 ArmWin++;
             }
@@ -81,7 +79,7 @@ class Arm
 
     public void ResetArm()
     {
-        ArmChoise = 0;
+        ArmChoises = 0;
         ArmIndex = 0;
     }
 
